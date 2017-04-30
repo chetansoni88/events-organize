@@ -11,8 +11,7 @@ namespace Core.Data
     {
         public UserEntity(IUser model) : base(model)
         {
-            PartitionKey = "User";
-            RowKey = Id.ToString();
+            RowKey = Username;
         }
         public IContact Contact { get; private set; }
         public string Username { get; set; }
@@ -38,6 +37,20 @@ namespace Core.Data
             Password = model.Password;
             Contact = new Contact();
             Contact.Clone(model.Contact);
+        }
+        internal override List<IUser> ExtractModels(List<DynamicTableEntity> entities)
+        {
+            var list = new List<IUser>();
+            foreach (var entity in entities)
+            {
+                IUser user = new User();
+                user.Id = entity.Properties["Id"].GuidValue.Value;
+                user.Name = entity.Properties["Name"].StringValue;
+                user.Password = entity.Properties["Password"].StringValue;
+                user.Username = entity.Properties["Username"].StringValue;
+                list.Add(user);
+            }
+            return list;
         }
     }
 }

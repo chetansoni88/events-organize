@@ -18,6 +18,9 @@ namespace Core.Data
                 case "Core.Models.IUser":
                     _entity = new UserEntity((IUser)model);
                     break;
+                case "Core.Models.IVendor":
+                    _entity = new UserEntity((IUser)model);
+                    break;
             }
             _model = model;
         }
@@ -30,6 +33,21 @@ namespace Core.Data
         public async Task<List<T>> Fetch(string propertyName, string operation, string value)
         {
             return await ((TableEntityBase<T>)_entity).Fetch(propertyName, operation, value);
+        }
+
+        public async Task<List<T>> FetchAll()
+        {
+            return await ((TableEntityBase<T>)_entity).FetchAll();
+        }
+
+        public async Task<int> Delete()
+        {
+            return await ((TableEntityBase<T>)_entity).Delete();
+        }
+
+        public async Task<T> FetchById()
+        {
+            return await ((TableEntityBase<T>)_entity).FetchById();
         }
     }
 }

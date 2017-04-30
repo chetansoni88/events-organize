@@ -21,6 +21,7 @@ namespace Core.Models
         DateTime EndTime { get; set; }
         EventType Type { get; }
         IContact Contact { get; }
+        string Name { get; set; }
     }
 
     public interface IUser : IModel

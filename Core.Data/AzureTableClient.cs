@@ -8,6 +8,40 @@ using Core.Models;
 
 namespace Core.Data
 {
+    internal class TableMapper
+    {
+        private TableMapper()
+        {
+
+        }
+
+        private static TableMapper _mapper = null;
+        private static object _lock = new object();
+        internal static TableMapper Instance
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    if (_mapper == null)
+                    {
+                        lock (_lock)
+                        {
+                            _mapper = new TableMapper();
+                            _mapper.Map = new Dictionary<string, CloudTable>();
+                        }
+                    }
+                }
+                return _mapper;
+            }
+        }
+
+        internal Dictionary<string, CloudTable> Map
+        {
+            get;
+            private set;
+        }
+    }
     internal class AzureTableClient<T, K> where T : TableEntityBase<K>
                                           where K : IModel
     {
@@ -29,11 +63,20 @@ namespace Core.Data
 
         async Task<CloudTable> GetTableReference()
         {
-            var client = GetClient();
-            // Retrieve a reference to the table.
-            CloudTable table = client.GetTableReference(_tableName);
-            // Create the table if it doesn't exist.
-            await table.CreateIfNotExistsAsync();
+            CloudTable table = null;
+            if (TableMapper.Instance.Map.ContainsKey(_tableName))
+            {
+                table = TableMapper.Instance.Map[_tableName];
+            }
+            else
+            {
+                var client = GetClient();
+                // Retrieve a reference to the table.
+                table = client.GetTableReference(_tableName);
+                // Create the table if it doesn't exist.
+                await table.CreateIfNotExistsAsync();
+                TableMapper.Instance.Map.Add(_tableName, table);
+            }
             return table;
         }
 
@@ -49,17 +92,22 @@ namespace Core.Data
             return (T)result.Result;
         }
 
-        internal async Task<List<K>> Fetch(string tableName, string propertyName, string operation, string value)
+        internal async Task<List<DynamicTableEntity>> FetchByCriteria(string tableName, string propertyName,
+            string operation, string value)
+        {
+            return await FetchByQueryText(tableName, TableQuery.GenerateFilterCondition(propertyName, operation, value));
+        }
+
+        async Task<List<DynamicTableEntity>> FetchByQueryText(string tableName, string queryText)
         {
             _tableName = tableName;
             var table = await GetTableReference();
 
-            // Construct the query operation for all customer entities where PartitionKey="Smith".
-            TableQuery query = new TableQuery().Where(TableQuery.GenerateFilterCondition(propertyName, operation, value));
+            TableQuery query = new TableQuery().Where(queryText);
 
             // Initialize the continuation token to null to start from the beginning of the table.
             TableContinuationToken continuationToken = null;
-            var list = new List<K>();
+            var list = new List<DynamicTableEntity>();
             do
             {
                 // Retrieve a segment (up to 1,000 entities).
@@ -69,13 +117,33 @@ namespace Core.Data
                 // Assign the new continuation token to tell the service where to
                 // continue on the next iteration (or null if it has reached the end).
                 continuationToken = tableQueryResult.ContinuationToken;
-                foreach (var r in tableQueryResult.Results)
-                {
-                    list.Add(((T)Convert.ChangeType(r, typeof(T))).ConvertToModel());
-                }
+                list.AddRange(tableQueryResult.Results);
                 // Loop until a null continuation token is received, indicating the end of the table.
             } while (continuationToken != null);
             return list;
+        }
+
+        internal async Task<List<DynamicTableEntity>> FetchById(string tableName, Guid id)
+        {
+            return await FetchByQueryText(tableName, TableQuery.GenerateFilterConditionForGuid("Id", "eq", id));
+        }
+
+        internal async Task<List<DynamicTableEntity>> FetchAll(string tableName)
+        {
+            return await FetchByQueryText(tableName, TableQuery.GenerateFilterCondition("PartitionKey", "eq", tableName));
+        }
+
+        internal async Task<TableResult> Delete(T entity)
+        {
+            _tableName = entity.TableName;
+            var table = await GetTableReference();
+            var results = await FetchByCriteria(entity.TableName, "RowKey", "eq", entity.RowKey);
+            if (results.Count > 0)
+            {
+                var op = TableOperation.Delete(results[0]);
+                return await table.ExecuteAsync(op);
+            }
+            return null;
         }
     }
 }

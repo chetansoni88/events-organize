@@ -12,6 +12,7 @@ namespace Core.Models
         public virtual EventType Type => throw new NotImplementedException();
         public IContact Contact { get; }
         public Guid Id { get; set; }
+        public string Name { get; set; }
         public EventBase()
         {
             Contact = new Contact();

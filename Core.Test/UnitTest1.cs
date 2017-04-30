@@ -22,11 +22,14 @@ namespace Core.Test
             user.Contact.Address.Street = "688";
 
             DataEntityHelper<IUser> helper = new DataEntityHelper<IUser>(user);
-            var t = helper.Save().Result;
+            var save = helper.Save().Result;
 
-            helper = new DataEntityHelper<IUser>(t);
-            var a = helper.Fetch("RowKey", "eq", t.Id.ToString()).Result;
+            helper = new DataEntityHelper<IUser>(save);
+            var one = helper.FetchById().Result;
 
+            var all = helper.FetchAll().Result;
+
+            var delete = helper.Delete().Result;
         }
     }
 }

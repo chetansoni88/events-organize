@@ -9,8 +9,12 @@ namespace Core.Data
 {
     internal abstract class TableEntityBase<T> : TableEntity where T : IModel
     {
+        T _model = default(T);
         internal TableEntityBase(T model)
         {
+            _model = model;
+            PartitionKey = TableName;
+            RowKey = model.Id.ToString();
             PopulateFromModel(model);
         }
 
@@ -26,7 +30,29 @@ namespace Core.Data
         internal async Task<List<T>> Fetch(string propertyName, string operation, string value)
         {
             var client = new AzureTableClient<TableEntityBase<T>, T>("");
-            return await client.Fetch(TableName, propertyName, operation, value);
+            var entities = await client.FetchByCriteria(TableName, propertyName, operation, value);
+            return ExtractModels(entities);
+        }
+
+        internal async Task<List<T>> FetchAll()
+        {
+            var client = new AzureTableClient<TableEntityBase<T>, T>("");
+            var entities = await client.FetchAll(TableName);
+            return ExtractModels(entities);
+        }
+
+        internal async Task<T> FetchById()
+        {
+            var client = new AzureTableClient<TableEntityBase<T>, T>("");
+            var entities = await client.FetchById(TableName, _model.Id);
+            return entities.Count > 0 ? ExtractModels(entities)[0] : default(T);
+        }
+
+        internal async Task<int> Delete()
+        {
+            var client = new AzureTableClient<TableEntityBase<T>, T>("");
+            var r = await client.Delete(this);
+            return r.Result != null ? 1 : 0;
         }
 
         internal virtual T ConvertToModel()
@@ -39,13 +65,9 @@ namespace Core.Data
             throw new NotImplementedException();
         }
 
-        internal static T ExtractModel(DynamicTableEntity entity)
+        internal virtual List<T> ExtractModels(List<DynamicTableEntity> entities)
         {
-            foreach(var key in entity.Properties.Keys)
-            {
-
-            }
-            return default(T);
+            throw new NotImplementedException();
         }
     }
 }
