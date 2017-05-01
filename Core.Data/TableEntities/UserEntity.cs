@@ -4,20 +4,39 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
 
 namespace Core.Data
 {
     internal class UserEntity : TableEntityBase<IUser>, IUser
     {
-        public UserEntity(IUser model) : base(model)
+        internal UserEntity(Guid id) : base(id)
+        {
+
+        }
+        internal UserEntity(IUser model) : base(model)
         {
             RowKey = Username;
         }
         public IContact Contact { get; private set; }
+
+        private string _contactJSON = string.Empty;
+        public string ContactJSON
+        {
+            get
+            {
+                if (Contact != null && !string.IsNullOrEmpty(Contact.Email))
+                    _contactJSON = JsonConvert.SerializeObject(Contact, Formatting.None);
+                return _contactJSON;
+            }
+            set
+            {
+                _contactJSON = value;
+            }
+        }
         public string Username { get; set; }
         public string Password { get; set; }
         public string Name { get; set; }
-        public Guid Id { get; set; }
         internal override string TableName => "users";
         internal override IUser ConvertToModel()
         {
@@ -31,7 +50,6 @@ namespace Core.Data
         }
         internal override void PopulateFromModel(IUser model)
         {
-            Id = model.Id;
             Name = model.Name;
             Username = model.Username;
             Password = model.Password;
@@ -48,6 +66,7 @@ namespace Core.Data
                 user.Name = entity.Properties["Name"].StringValue;
                 user.Password = entity.Properties["Password"].StringValue;
                 user.Username = entity.Properties["Username"].StringValue;
+                user.Contact.Clone(JsonConvert.DeserializeObject<Contact>(entity.Properties["ContactJSON"].StringValue));
                 list.Add(user);
             }
             return list;

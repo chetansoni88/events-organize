@@ -16,7 +16,7 @@ namespace Core.Data
 
         internal override string TableName => "events";
 
-        public List<IVendor> Vendors { get; }
+        public List<IArrangement> Arrangements { get; }
 
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
@@ -43,7 +43,7 @@ namespace Core.Data
             e.EndTime = EndTime;
             e.Name = Name;
             e.Contact.Clone(Contact);
-            e.Vendors.AddRange(Vendors);
+            e.Arrangements.AddRange(Arrangements);
             return e;
         }
         internal override void PopulateFromModel(IEvent model)
@@ -53,7 +53,7 @@ namespace Core.Data
             EndTime = model.EndTime;
             Name = model.Name;
             Type = model.Type;
-            Vendors.AddRange(model.Vendors);
+            Arrangements.AddRange(model.Arrangements);
             Contact.Clone(model.Contact);
         }
         internal override List<IEvent> ExtractModels(List<DynamicTableEntity> entities)

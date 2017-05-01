@@ -14,9 +14,17 @@ namespace Core.Models
         VendorType Type { get; }
     }
 
+    public interface IArrangement : IModel
+    {
+        IVendor Vendor { get; set; }
+        DateTime StartTime { get; set; }
+        DateTime EndTime { get; set; }
+        ArrangementStatus Status { get; set; }
+    }
+
     public interface IEvent : IModel
     {
-        List<IVendor> Vendors { get; }
+        List<IArrangement> Arrangements { get; }
         DateTime StartTime { get; set; }
         DateTime EndTime { get; set; }
         EventType Type { get; }

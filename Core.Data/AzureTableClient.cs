@@ -50,7 +50,8 @@ namespace Core.Data
 
         internal AzureTableClient(string connection)
         {
-            //_conn = connection;
+            if (!string.IsNullOrEmpty(connection.Trim()))
+                _conn = connection;
         }
 
         CloudTableClient GetClient()
@@ -137,7 +138,7 @@ namespace Core.Data
         {
             _tableName = entity.TableName;
             var table = await GetTableReference();
-            var results = await FetchByCriteria(entity.TableName, "RowKey", "eq", entity.RowKey);
+            var results = await FetchById(entity.TableName, entity.Id);
             if (results.Count > 0)
             {
                 var op = TableOperation.Delete(results[0]);

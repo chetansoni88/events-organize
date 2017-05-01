@@ -11,6 +11,19 @@ namespace Core.Data
     {
         ITableEntity _entity = null;
         T _model = default(T);
+        public DataEntityHelper(Guid id)
+        {
+            switch (typeof(T).ToString())
+            {
+                case "Core.Models.IUser":
+                    _entity = new UserEntity(id);
+                    break;
+                case "Core.Models.IVendor":
+                    _entity = new VendorEntity(id);
+                    break;
+            }
+        }
+
         public DataEntityHelper(T model)
         {
             switch (typeof(T).ToString())
@@ -19,7 +32,7 @@ namespace Core.Data
                     _entity = new UserEntity((IUser)model);
                     break;
                 case "Core.Models.IVendor":
-                    _entity = new UserEntity((IUser)model);
+                    _entity = new VendorEntity((IVendor)model);
                     break;
             }
             _model = model;

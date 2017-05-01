@@ -19,4 +19,13 @@ namespace Core.Models
         Corporate,
         BabyShower
     }
+
+    public enum ArrangementStatus
+    {
+        ToBeStarted,
+        InProgress,
+        ReadyToReview,
+        Complete
+    }
+
 }
