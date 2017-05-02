@@ -70,6 +70,15 @@ namespace Core.Data
                     case VendorType.Photographer:
                         vendor = new Photographer();
                         break;
+                    case VendorType.Caterer:
+                        vendor = new Caterer();
+                        break;
+                    case VendorType.Florist:
+                        vendor = new Florist();
+                        break;
+                    case VendorType.Videographer:
+                        vendor = new Videographer();
+                        break;
                 }
                 if (vendor != null)
                 {

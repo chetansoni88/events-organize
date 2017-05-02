@@ -30,6 +30,7 @@ namespace Core.Models
         EventType Type { get; }
         IContact Contact { get; }
         string Name { get; set; }
+        IAddress Venue { get; }
     }
 
     public interface IUser : IModel
@@ -63,5 +64,6 @@ namespace Core.Models
     public interface IProject : IModel
     {
         List<IEvent> Events { get; }
+        string Name { get; set; }
     }
 }

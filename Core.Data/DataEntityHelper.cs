@@ -21,6 +21,15 @@ namespace Core.Data
                 case "Core.Models.IVendor":
                     _entity = new VendorEntity(id);
                     break;
+                case "Core.Models.IEvent":
+                    _entity = new EventEntity(id);
+                    break;
+                case "Core.Models.IProject":
+                    _entity = new ProjectEntity(id);
+                    break;
+                case "Core.Models.IArrangement":
+                    _entity = new ArrangementEntity(id);
+                    break;
             }
         }
 
@@ -33,6 +42,15 @@ namespace Core.Data
                     break;
                 case "Core.Models.IVendor":
                     _entity = new VendorEntity((IVendor)model);
+                    break;
+                case "Core.Models.IEvent":
+                    _entity = new EventEntity((IEvent)model);
+                    break;
+                case "Core.Models.IProject":
+                    _entity = new ProjectEntity((IProject)model);
+                    break;
+                case "Core.Models.IArrangement":
+                    _entity = new ArrangementEntity((IArrangement)model);
                     break;
             }
             _model = model;

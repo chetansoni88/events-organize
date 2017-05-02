@@ -11,5 +11,14 @@ namespace Core.Models
         public DateTime EndTime { get ; set ; }
         public ArrangementStatus Status { get ; set ; }
         public Guid Id { get ; set ; }
+
+        public void Clone(IArrangement arrangement)
+        {
+            Vendor = arrangement.Vendor;
+            StartTime = arrangement.StartTime;
+            EndTime = arrangement.EndTime;
+            Status = arrangement.Status;
+            Id = arrangement.Id;
+        }
     }
 }

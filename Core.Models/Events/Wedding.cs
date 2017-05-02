@@ -8,4 +8,16 @@ namespace Core.Models
     {
         public override EventType Type => EventType.Wedding;
     }
+    public class BabyShower : EventBase
+    {
+        public override EventType Type => EventType.BabyShower;
+    }
+    public class Corporate : EventBase
+    {
+        public override EventType Type => EventType.Corporate;
+    }
+    public class Engagement : EventBase
+    {
+        public override EventType Type => EventType.Engagement;
+    }
 }

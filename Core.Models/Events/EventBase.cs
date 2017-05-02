@@ -13,11 +13,13 @@ namespace Core.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public List<IArrangement> Arrangements { get; private set; }
+        public IAddress Venue { get; }
 
         public EventBase()
         {
             Contact = new Contact();
             Arrangements = new List<IArrangement>();
+            Venue = new Address();
         }
     }
 }
