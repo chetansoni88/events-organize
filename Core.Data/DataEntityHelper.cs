@@ -80,5 +80,10 @@ namespace Core.Data
         {
             return await ((TableEntityBase<T>)_entity).FetchById();
         }
+
+        public async Task<List<T>> FetchQuery(string query)
+        {
+            return await ((TableEntityBase<T>)_entity).FetchByQuery(query);
+        }
     }
 }

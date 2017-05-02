@@ -4,6 +4,7 @@ using Core.Data;
 using Core.Models;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Core.Business;
 
 namespace Core.Test
 {
@@ -119,22 +120,21 @@ namespace Core.Test
         {
             IUser user = CreateUser();
 
-            DataEntityHelper<IUser> helper = new DataEntityHelper<IUser>(user);
-            var save = helper.Save().Result;
+            UserProcessor up = new UserProcessor(user);
+            var save = up.Create().Result;
 
-            Assert.IsTrue(save != null && save.Id != Guid.Empty, "User save failed.");
+            Assert.IsTrue(save != null && save.Data != null && save.Data.Id != Guid.Empty, "User save failed.");
 
-            helper = new DataEntityHelper<IUser>(save.Id);
-            var one = helper.FetchById().Result;
+            var one = up.FetchById().Result;
 
             Assert.IsTrue(one != null && JsonConvert.SerializeObject(one, Formatting.None).Equals(JsonConvert.SerializeObject(save, Formatting.None)), "User fetch failed.");
 
-            var all = helper.FetchAll().Result;
-            Assert.IsTrue(all.Count > 0, "User Fetch all failed.");
+            var loggedIn = up.Login(user.Username, user.Password).Result;
+            Assert.IsTrue(loggedIn != null && JsonConvert.SerializeObject(loggedIn.Data, Formatting.None).Equals(JsonConvert.SerializeObject(save.Data, Formatting.None)), "User fetch failed.");
 
-            var delete = helper.Delete().Result;
-            one = helper.FetchById().Result;
-            Assert.IsTrue(one == null, "User delete failed.");
+            var delete = up.Delete().Result;
+            one = up.FetchById().Result;
+            Assert.IsTrue(one.Data == null, "User delete failed.");
         }
 
         [TestMethod]

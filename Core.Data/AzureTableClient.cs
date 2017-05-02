@@ -99,7 +99,7 @@ namespace Core.Data
             return await FetchByQueryText(tableName, TableQuery.GenerateFilterCondition(propertyName, operation, value));
         }
 
-        async Task<List<DynamicTableEntity>> FetchByQueryText(string tableName, string queryText)
+        internal async Task<List<DynamicTableEntity>> FetchByQueryText(string tableName, string queryText)
         {
             _tableName = tableName;
             var table = await GetTableReference();

@@ -54,6 +54,13 @@ namespace Core.Data
             return ExtractModels(entities);
         }
 
+        internal virtual async Task<List<T>> FetchByQuery(string queryText)
+        {
+            var client = new AzureTableClient<TableEntityBase<T>, T>("");
+            var entities = await client.FetchByQueryText(TableName, queryText);
+            return ExtractModels(entities);
+        }
+
         internal virtual async Task<List<T>> FetchAll()
         {
             var client = new AzureTableClient<TableEntityBase<T>, T>("");
