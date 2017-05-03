@@ -129,7 +129,7 @@ namespace Core.Test
 
             Assert.IsTrue(one != null && JsonConvert.SerializeObject(one, Formatting.None).Equals(JsonConvert.SerializeObject(save, Formatting.None)), "User fetch failed.");
 
-            var loggedIn = up.Login(user.Username, user.Password).Result;
+            var loggedIn = up.Login().Result;
             Assert.IsTrue(loggedIn != null && JsonConvert.SerializeObject(loggedIn.Data, Formatting.None).Equals(JsonConvert.SerializeObject(save.Data, Formatting.None)), "User fetch failed.");
 
             var delete = up.Delete().Result;
@@ -142,22 +142,18 @@ namespace Core.Test
         {
             IArrangement a = CreateArrangement();
 
-            DataEntityHelper<IArrangement> helper = new DataEntityHelper<IArrangement>(a);
-            var save = helper.Save().Result;
+            var ap = new ArrangementProcessor(a);
+            var save = ap.Create().Result;
 
-            Assert.IsTrue(save != null && save.Id != Guid.Empty, "Arrangement save failed.");
+            Assert.IsTrue(save.Data != null && save.Data.Id != Guid.Empty, "Arrangement save failed.");
 
-            helper = new DataEntityHelper<IArrangement>(save.Id);
-            var one = helper.FetchById().Result;
+            var one = ap.FetchById().Result;
 
-            Assert.IsTrue(one != null, "Arrangement fetch failed.");
+            Assert.IsTrue(one.Data != null, "Arrangement fetch failed.");
 
-            var all = helper.FetchAll().Result;
-            Assert.IsTrue(all.Count > 0, "Arrangement Fetch all failed.");
-
-            var delete = helper.Delete().Result;
-            one = helper.FetchById().Result;
-            Assert.IsTrue(one == null, "Arrangement delete failed.");
+            var delete = ap.Delete().Result;
+            one = ap.FetchById().Result;
+            Assert.IsTrue(one.Data == null, "Arrangement delete failed.");
         }
 
         [TestMethod]
@@ -165,60 +161,52 @@ namespace Core.Test
         {
             IVendor vendor = CreateVendor(VendorType.Photographer);
 
-            DataEntityHelper<IVendor> helper = new DataEntityHelper<IVendor>(vendor);
-            var save = helper.Save().Result;
+            var vp = new VendorProcessor(vendor);
+            var save = vp.Create().Result;
 
-            Assert.IsTrue(save != null && save.Id != Guid.Empty, "Vendor save failed.");
+            Assert.IsTrue(save.Data != null && save.Data.Id != Guid.Empty, "Vendor save failed.");
 
-            helper = new DataEntityHelper<IVendor>(save.Id);
-            var one = helper.FetchById().Result;
+            var one = vp.FetchById().Result;
 
-            Assert.IsTrue(one != null && JsonConvert.SerializeObject(one, Formatting.None).Equals(JsonConvert.SerializeObject(save, Formatting.None)), "Vendor fetch failed.");
+            Assert.IsTrue(one.Data != null && JsonConvert.SerializeObject(one.Data, Formatting.None).Equals(JsonConvert.SerializeObject(save.Data, Formatting.None)), "Vendor fetch failed.");
 
-            var uHelper = new DataEntityHelper<IUser>(save.Id);
+            var uHelper = new UserProcessor(save.Data.Id);
             var uOne = uHelper.FetchById().Result;
-            Assert.IsTrue(uOne != null, "User not populated from vendor save.");
+            Assert.IsTrue(uOne.Data != null, "User not populated from vendor save.");
 
-            var all = helper.FetchAll().Result;
-            Assert.IsTrue(all.Count > 0, "Vendor Fetch all failed.");
-
-            var delete = helper.Delete().Result;
-            one = helper.FetchById().Result;
-            Assert.IsTrue(one == null, "Vendor delete failed.");
+            var delete = vp.Delete().Result;
+            one = vp.FetchById().Result;
+            Assert.IsTrue(one.Data == null, "Vendor delete failed.");
 
             uOne = uHelper.FetchById().Result;
-            Assert.IsTrue(uOne == null, "User not deleted from vendor delete.");
+            Assert.IsTrue(uOne.Data == null, "User not deleted from vendor delete.");
         }
 
         [TestMethod]
         public void TestEventCRUD()
         {
             IEvent e = CreateEvent(EventType.Wedding);
-            DataEntityHelper<IEvent> helper = new DataEntityHelper<IEvent>(e);
-            var save = helper.Save().Result;
+            var ep = new EventProcessor(e);
+            var save = ep.Create().Result;
 
-            Assert.IsTrue(save != null && save.Id != Guid.Empty, "Event save failed.");
+            Assert.IsTrue(save.Data != null && save.Data.Id != Guid.Empty, "Event save failed.");
 
-            helper = new DataEntityHelper<IEvent>(save.Id);
-            var one = helper.FetchById().Result;
+            var one = ep.FetchById().Result;
 
-            Assert.IsTrue(one != null, "Event fetch failed.");
+            Assert.IsTrue(one.Data != null, "Event fetch failed.");
 
-            var all = helper.FetchAll().Result;
-            Assert.IsTrue(all.Count > 0, "Event fetch all failed.");
+            var delete = ep.Delete().Result;
+            one = ep.FetchById().Result;
+            Assert.IsTrue(one.Data == null, "Event delete failed.");
 
-            var delete = helper.Delete().Result;
-            one = helper.FetchById().Result;
-            Assert.IsTrue(one == null, "Event delete failed.");
+            var vp = new VendorProcessor(e.Arrangements[0].Vendor.Id);
+            var d = vp.Delete().Result;
+            var o = vp.FetchById().Result;
+            Assert.IsTrue(o.Data == null, "Vendor delete failed.");
 
-            DataEntityHelper<IVendor> h = new DataEntityHelper<IVendor>(e.Arrangements[0].Vendor.Id);
-            var d = h.Delete().Result;
-            var o = h.FetchById().Result;
-            Assert.IsTrue(o == null, "Vendor delete failed.");
-
-            var uHelper = new DataEntityHelper<IUser>(e.Arrangements[0].Vendor.Id);
+            var uHelper = new UserProcessor(e.Arrangements[0].Vendor.Id);
             var uOne = uHelper.FetchById().Result;
-            Assert.IsTrue(uOne == null, "User not deleted from vendor delete.");
+            Assert.IsTrue(uOne.Data == null, "User not deleted from vendor delete.");
         }
 
         [TestMethod]
@@ -226,40 +214,36 @@ namespace Core.Test
         {
             IProject p = CreateProject();
 
-            DataEntityHelper<IProject> helper = new DataEntityHelper<IProject>(p);
-            var save = helper.Save().Result;
+            var pp = new ProjectProcessor(p);
+            var save = pp.Create().Result;
 
-            Assert.IsTrue(save != null && save.Id != Guid.Empty, "Project save failed.");
+            Assert.IsTrue(save.Data != null && save.Data.Id != Guid.Empty, "Project save failed.");
 
-            helper = new DataEntityHelper<IProject>(save.Id);
-            var one = helper.FetchById().Result;
+            var one = pp.FetchById().Result;
 
-            Assert.IsTrue(one != null, "Project fetch failed.");
+            Assert.IsTrue(one.Data != null, "Project fetch failed.");
 
-            DataEntityHelper<IEvent> eHelper = new DataEntityHelper<IEvent>(p.Events[0].Id);
+           var eHelper = new EventProcessor(p.Events[0].Id);
             var eOne = eHelper.FetchById().Result;
 
-            Assert.IsTrue(eOne != null, "Event fetch failed.");
+            Assert.IsTrue(eOne.Data != null, "Event fetch failed.");
 
-            var all = helper.FetchAll().Result;
-            Assert.IsTrue(all.Count > 0, "Project Fetch all failed.");
-
-            var delete = helper.Delete().Result;
-            one = helper.FetchById().Result;
-            Assert.IsTrue(one == null, "Project delete failed.");
+            var delete = pp.Delete().Result;
+            one = pp.FetchById().Result;
+            Assert.IsTrue(one.Data == null, "Project delete failed.");
 
             eOne = eHelper.FetchById().Result;
-            Assert.IsTrue(eOne == null, "Event delete failed from Project.");
+            Assert.IsTrue(eOne.Data == null, "Event delete failed from Project.");
 
-            var vhelper = new DataEntityHelper<IVendor>(p.Events[0].Arrangements[0].Vendor.Id);
+            var vhelper = new VendorProcessor(p.Events[0].Arrangements[0].Vendor.Id);
             delete = vhelper.Delete().Result;
 
             var vendor = vhelper.FetchById().Result;
-            Assert.IsTrue(one == null, "Vendor delete failed.");
+            Assert.IsTrue(one.Data == null, "Vendor delete failed.");
 
-            var uHelper = new DataEntityHelper<IUser>(p.Events[0].Arrangements[0].Vendor.Id);
+            var uHelper = new UserProcessor(p.Events[0].Arrangements[0].Vendor.Id);
             var user = uHelper.FetchById().Result;
-            Assert.IsTrue(user == null, "User not deleted from vendor delete.");
+            Assert.IsTrue(user.Data == null, "User not deleted from vendor delete.");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Data;
+using Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,38 +7,45 @@ using System.Threading.Tasks;
 
 namespace Core.Business
 {
-    public class UserProcessor : ProcessorBase<IUser>
+    public class VendorProcessor : ProcessorBase<IVendor>
     {
-        public UserProcessor(Guid id) : base(id)
+        public VendorProcessor(Guid id) : base(id)
         {
 
         }
 
-        public UserProcessor(IUser user) : base(user)
+        public VendorProcessor(IVendor user) : base(user)
         {
 
         }
 
-        public async Task<IProcessorResult<IUser>> Login()
+        public async Task<IProcessorResult<IVendor>> Login()
         {
-            IProcessorResult<IUser> result;
+            IProcessorResult<IVendor> result;
             try
             {
-                var users = await DataHelper.FetchQuery(string.Format(@"(Username eq '{0}') and(Password eq '{1}')", Model.Username, Model.Password));
-                if (users.Count == 1)
-                {
-                    result = new ProcessorResult<IUser>(users[0]);
+                UserProcessor up = new UserProcessor((IUser)Model);
+                var user = await up.Login();
 
-                    //Set up a token after login is successful
+                if (user.Data != null)
+                {
+                    DataEntityHelper<IVendor> uHelper = new DataEntityHelper<IVendor>(user.Data.Id);
+                    IVendor vendor = await uHelper.FetchById();
+                    if (vendor != null)
+                        result = new ProcessorResult<IVendor>(vendor);
+                    else
+                    {
+                        result = new ProcessorResult<IVendor>("No user found.");
+                    }
                 }
                 else
                 {
-                    result = new ProcessorResult<IUser>("No user found.");
+                    result = new ProcessorResult<IVendor>("No user found.");
                 }
             }
             catch (Exception ex)
             {
-                result = new ProcessorResult<IUser>(ex.Message);
+                result = new ProcessorResult<IVendor>(ex.Message);
             }
             return result;
         }

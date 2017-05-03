@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core.Business\Core.Business.csproj" />
-    <ProjectReference Include="..\Core.Data\Core.Data.csproj" />
     <ProjectReference Include="..\Core.Models\Core.Models.csproj" />
   </ItemGroup>
 

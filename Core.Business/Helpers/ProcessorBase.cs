@@ -86,7 +86,7 @@ namespace Core.Business
             return result;
         }
 
-        public virtual async Task<IValidationResult> Validate()
+        public virtual IValidationResult Validate()
         {
             throw new NotImplementedException();
         }

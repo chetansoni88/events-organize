@@ -7,7 +7,7 @@ namespace Core.Business
 {
     public interface IProcessor<T>
     {
-        Task<IValidationResult> Validate();
+        IValidationResult Validate();
         Task<IProcessorResult<T>> Create();
         Task<IProcessorResult<T>> Update();
         Task<int> Delete();
