@@ -17,5 +17,16 @@ namespace Core.Business
         {
 
         }
+
+        public override IValidationResult Validate()
+        {
+            IValidationResult result = new ValidationResult();
+            if (string.IsNullOrEmpty(Model.Name))
+            {
+                result.AddFailure("Project name cannot be empty.");
+            }
+            return result;
+        }
+
     }
 }

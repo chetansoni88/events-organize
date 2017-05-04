@@ -33,6 +33,12 @@ namespace Core.Business
         public virtual async Task<IProcessorResult<T>> Create()
         {
             IProcessorResult<T> result;
+            var v = Validate();
+            if(!v.Success)
+            {
+                return new ProcessorResult<T>("Validation failed : " + v.Failures[0]);
+            }
+           
             try
             {
                 var save = await _dataHelper.Save();
@@ -70,6 +76,12 @@ namespace Core.Business
 
         public virtual async Task<IProcessorResult<T>> Update()
         {
+            var v = Validate();
+            if (!v.Success)
+            {
+                return new ProcessorResult<T>("Validation failed : " + v.Failures[0]);
+            }
+
             IProcessorResult<T> result;
             try
             {

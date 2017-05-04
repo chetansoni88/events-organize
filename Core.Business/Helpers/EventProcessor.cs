@@ -18,5 +18,19 @@ namespace Core.Business
 
         }
 
+        public override IValidationResult Validate()
+        {
+            IValidationResult result = new ValidationResult();
+            if (string.IsNullOrEmpty(Model.Name))
+            {
+                result.AddFailure("Event name cannot be empty.");
+            }
+            if (string.IsNullOrEmpty(Model.Venue.Street))
+            {
+                result.AddFailure("Event venue cannot be empty.");
+            }
+
+            return result;
+        }
     }
 }
