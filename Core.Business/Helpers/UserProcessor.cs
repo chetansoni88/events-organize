@@ -53,7 +53,7 @@ namespace Core.Business
             {
                 result.AddFailure("Name cannot be empty.");
             }
-            if (Model.Contact == null || !string.IsNullOrEmpty(Model.Contact.Email))
+            if (Model.Contact == null || string.IsNullOrEmpty(Model.Contact.Email))
             {
                 result.AddFailure("User email cannot be empty.");
             }

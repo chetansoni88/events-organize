@@ -1,10 +1,8 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Core.Data;
 using Core.Models;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Core.Business;
+using Newtonsoft.Json;
 
 namespace Core.Test
 {
@@ -75,10 +73,10 @@ namespace Core.Test
             var a = CreateArrangement();
             IVendor vendor = CreateVendor(VendorType.Photographer);
 
-            DataEntityHelper<IVendor> h = new DataEntityHelper<IVendor>(vendor);
-            var s = h.Save().Result;
+            var h = new VendorProcessor(vendor);
+            var s = h.Create().Result;
 
-            a.Vendor = s;
+            a.Vendor = s.Data;
             e.Arrangements.Add(a);
 
             return e;
