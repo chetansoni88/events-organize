@@ -93,6 +93,7 @@ namespace Core.Data
 
         internal async override Task<IProject> Save()
         {
+            PopulateFromModel(Model);
             foreach (var a in Events)
             {
                 var aEntity = new EventEntity(a);

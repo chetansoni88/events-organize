@@ -35,26 +35,32 @@ namespace Core.Data
 
         public DataEntityHelper(T model)
         {
+            _model = model;
+            SetEntity();
+        }
+
+        private void SetEntity()
+        {
             switch (typeof(T).ToString())
             {
                 case "Core.Models.IUser":
-                    _entity = new UserEntity((IUser)model);
+                    _entity = new UserEntity((IUser)_model);
                     break;
                 case "Core.Models.IVendor":
-                    _entity = new VendorEntity((IVendor)model);
+                    _entity = new VendorEntity((IVendor)_model);
                     break;
                 case "Core.Models.IEvent":
-                    _entity = new EventEntity((IEvent)model);
+                    _entity = new EventEntity((IEvent)_model);
                     break;
                 case "Core.Models.IProject":
-                    _entity = new ProjectEntity((IProject)model);
+                    _entity = new ProjectEntity((IProject)_model);
                     break;
                 case "Core.Models.IArrangement":
-                    _entity = new ArrangementEntity((IArrangement)model);
+                    _entity = new ArrangementEntity((IArrangement)_model);
                     break;
             }
-            _model = model;
         }
+
 
         public async Task<T> Save()
         {
@@ -78,7 +84,9 @@ namespace Core.Data
 
         public async Task<T> FetchById()
         {
-            return await ((TableEntityBase<T>)_entity).FetchById();
+            _model = await ((TableEntityBase<T>)_entity).FetchById();
+            SetEntity();
+            return _model;
         }
 
         public async Task<List<T>> FetchQuery(string query)

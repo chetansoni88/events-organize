@@ -42,6 +42,7 @@ namespace Core.Data
 
         internal virtual async Task<T> Save()
         {
+            PopulateFromModel(Model);
             var client = new AzureTableClient<TableEntityBase<T>, T>("");
             var result = await client.Save(this);
             return _model;
@@ -72,7 +73,8 @@ namespace Core.Data
         {
             var client = new AzureTableClient<TableEntityBase<T>, T>("");
             var entities = await client.FetchById(TableName, Id);
-            return entities.Count > 0 ? ExtractModels(entities)[0] : default(T);
+            _model =  entities.Count > 0 ? ExtractModels(entities)[0] : default(T);
+            return _model;
         }
 
         internal virtual async Task<int> Delete()

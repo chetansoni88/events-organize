@@ -7,7 +7,7 @@ namespace Core.Business
 {
     public abstract class ProcessorBase<T> : IProcessor<T> where T : IModel
     {
-        protected T Model { get; }
+        protected T Model { get; private set; }
 
         DataEntityHelper<T> _dataHelper = null;
 
@@ -65,6 +65,7 @@ namespace Core.Business
             try
             {
                 var fetch = await _dataHelper.FetchById();
+                Model = fetch;
                 result = new ProcessorResult<T>(fetch);
             }
             catch (Exception ex)

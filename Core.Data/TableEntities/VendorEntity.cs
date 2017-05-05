@@ -98,6 +98,7 @@ namespace Core.Data
         }
         internal async override Task<IVendor> Save()
         {
+            PopulateFromModel(Model);
             var save = await base.Save();
             var uEntity = new UserEntity((IUser)Model);
             await uEntity.Save();

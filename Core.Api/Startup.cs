@@ -10,7 +10,7 @@ namespace Core.Api
             HttpConfiguration config = new HttpConfiguration();
             config.Routes.MapHttpRoute(
                 "Default",
-                "{controller}/{id}",
+                "{controller}/{action}/{id}",
                 new { id = RouteParameter.Optional });
 
             app.UseWebApi(config);

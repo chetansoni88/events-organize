@@ -48,23 +48,7 @@ namespace Core.Test
 
         private IEvent CreateEvent(EventType type)
         {
-            IEvent e = null;
-            switch (type)
-            {
-                case EventType.Wedding:
-                    e = new Wedding();
-                    break;
-                case EventType.BabyShower:
-                    e = new BabyShower();
-                    break;
-                case EventType.Corporate:
-                    e = new Corporate();
-                    break;
-                case EventType.Engagement:
-                    e = new Engagement();
-                    break;
-            }
-
+            IEvent e = EventBase.GetEventFromType(type);
             e.Name = "Wedding Sample";
             e.StartTime = DateTime.Today.AddMonths(1);
             e.EndTime = e.StartTime.AddHours(6);

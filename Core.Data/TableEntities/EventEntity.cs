@@ -87,28 +87,16 @@ namespace Core.Data
 
         internal override IEvent ConvertToModel()
         {
-            IEvent e = null;
-            switch ((EventType)Type)
+            IEvent e = EventBase.GetEventFromType((EventType)Type);
+            if (e != null)
             {
-                case EventType.Wedding:
-                    e = new Wedding();
-                    break;
-                case EventType.BabyShower:
-                    e = new BabyShower();
-                    break;
-                case EventType.Corporate:
-                    e = new Corporate();
-                    break;
-                case EventType.Engagement:
-                    e = new Engagement();
-                    break;
+                e.Id = Id;
+                e.StartTime = StartTime;
+                e.EndTime = EndTime;
+                e.Name = Name;
+                e.Contact.Clone(Contact);
+                e.Arrangements.AddRange(Arrangements);
             }
-            e.Id = Id;
-            e.StartTime = StartTime;
-            e.EndTime = EndTime;
-            e.Name = Name;
-            e.Contact.Clone(Contact);
-            e.Arrangements.AddRange(Arrangements);
             return e;
         }
         internal override void PopulateFromModel(IEvent model)
@@ -130,22 +118,7 @@ namespace Core.Data
             var list = new List<IEvent>();
             foreach (var entity in entities)
             {
-                IEvent e = null;
-                switch ((EventType)entity.Properties["Type"].Int32Value.Value)
-                {
-                    case EventType.Wedding:
-                        e = new Wedding();
-                        break;
-                    case EventType.BabyShower:
-                        e = new BabyShower();
-                        break;
-                    case EventType.Corporate:
-                        e = new Corporate();
-                        break;
-                    case EventType.Engagement:
-                        e = new Engagement();
-                        break;
-                }
+                IEvent e = EventBase.GetEventFromType((EventType)entity.Properties["Type"].Int32Value.Value);
                 if (e != null)
                 {
                     e.Id = entity.Properties["Id"].GuidValue.Value;
@@ -174,6 +147,7 @@ namespace Core.Data
 
         internal async override Task<IEvent> Save()
         {
+            PopulateFromModel(Model);
             foreach (var a in Arrangements)
             {
                 var aEntity = new ArrangementEntity(a);

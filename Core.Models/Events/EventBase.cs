@@ -21,5 +21,26 @@ namespace Core.Models
             Arrangements = new List<IArrangement>();
             Venue = new Address();
         }
+
+        public static IEvent GetEventFromType(EventType type)
+        {
+            IEvent e = null;
+            switch (type)
+            {
+                case EventType.Wedding:
+                    e = new Wedding();
+                    break;
+                case EventType.BabyShower:
+                    e = new BabyShower();
+                    break;
+                case EventType.Corporate:
+                    e = new Corporate();
+                    break;
+                case EventType.Engagement:
+                    e = new Engagement();
+                    break;
+            }
+            return e;
+        }
     }
 }

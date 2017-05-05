@@ -32,5 +32,53 @@ namespace Core.Business
 
             return result;
         }
+
+        public async Task<bool> AddArrangements(List<IArrangement> arrangements)
+        {
+            try
+            {
+                if (arrangements != null && arrangements.Count > 0)
+                {
+                    var e = await FetchById();
+                    e.Data.Arrangements.AddRange(arrangements);
+                    await Update();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteArrangements(List<IArrangement> arrangements)
+        {
+            try
+            {
+                if (arrangements != null && arrangements.Count > 0)
+                {
+                    bool update = false;
+                    var e = await FetchById();
+                    foreach (var ar in arrangements)
+                    {
+                        var matchedAr = e.Data.Arrangements.Find(a => a.Id.Equals(ar.Id));
+                        if (matchedAr != null)
+                        {
+                            update = true;
+                            e.Data.Arrangements.Remove(matchedAr);
+                            var ap = new ArrangementProcessor(ar.Id);
+                            await ap.Delete();
+                        }
+                    }
+                    if (update)
+                        await Update();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }

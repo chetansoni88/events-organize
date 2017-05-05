@@ -11,36 +11,36 @@ using Newtonsoft.Json;
 
 namespace Core.Api.Controllers
 {
-
-    public class EventRequest
+    public class ProjectRequest
     {
-        public List<Arrangement> Arrangements { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public EventType Type { get; set; }
+        public List<EventRequest> Events { get; set; }
         public Contact Contact { get; set; }
         public string Name { get; set; }
         public Address Venue { get; set; }
         public Guid Id { get; set; }
-        public void CopyRequestToEvent(IEvent e)
+        public void CopyRequestToProject(IProject p)
         {
-            e.Contact.Clone(Contact);
-            e.StartTime = StartTime;
-            e.EndTime = EndTime;
-            e.Name = Name;
-            e.Venue.Clone(Venue);
-            if (Arrangements != null)
-                e.Arrangements.AddRange(Arrangements);
+            p.Name = Name;
+            if (Events != null)
+            {
+                foreach (var e in Events)
+                {
+                    IEvent ev = EventBase.GetEventFromType(e.Type);
+                    e.CopyRequestToEvent(ev);
+                    p.Events.Add(ev);
+                }
+
+            }
         }
     }
 
-    public class EventsController : ApiController
+    public class ProjectController : ApiController
     {
         public async Task<HttpResponseMessage> Get(Guid id)
         {
             if (id != Guid.Empty)
             {
-                var ep = new EventProcessor(id);
+                var ep = new ProjectProcessor(id);
                 var e = await ep.FetchById();
                 if (e.Data != null)
                 {
@@ -58,31 +58,28 @@ namespace Core.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<HttpResponseMessage> Create(EventRequest req)
+        public async Task<HttpResponseMessage> Create(ProjectRequest req)
         {
-            IEvent e = EventBase.GetEventFromType(req.Type);
-            if (e != null)
+            IProject p = new Project();
+            req.CopyRequestToProject(p);
+            var ep = new ProjectProcessor(p);
+            var res = await ep.Create();
+            if (res != null && res.Success)
             {
-                req.CopyRequestToEvent(e);
-                var ep = new EventProcessor(e);
-                var res = await ep.Create();
-                if (res != null && res.Success)
+                return new HttpResponseMessage()
                 {
-                    return new HttpResponseMessage()
-                    {
-                        Content = new StringContent(JsonConvert.SerializeObject(new { Id = res.Data.Id.ToString() }))
-                    };
-                }
+                    Content = new StringContent(JsonConvert.SerializeObject(new { Id = res.Data.Id.ToString() }))
+                };
             }
             return new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
         }
 
         [HttpPost]
-        public async Task<HttpResponseMessage> Delete(EventRequest req)
+        public async Task<HttpResponseMessage> Delete(ProjectRequest req)
         {
             if (req.Id != Guid.Empty)
             {
-                var ep = new EventProcessor(req.Id);
+                var ep = new ProjectProcessor(req.Id);
                 var e = await ep.Delete();
                 if (e > 0)
                 {
@@ -101,19 +98,21 @@ namespace Core.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<HttpResponseMessage> AddArrangement(EventRequest req)
+        public async Task<HttpResponseMessage> AddEvents(ProjectRequest req)
         {
             if (req.Id != Guid.Empty)
             {
-                if (req.Arrangements != null && req.Arrangements.Any())
+                if (req.Events != null && req.Events.Any())
                 {
-                    var ep = new EventProcessor(req.Id);
-                    List<IArrangement> list = new List<IArrangement>();
-                    foreach(var ar in req.Arrangements)
+                    var ep = new ProjectProcessor(req.Id);
+                    List<IEvent> list = new List<IEvent>();
+                    foreach (var ar in req.Events)
                     {
-                        list.Add(ar);
+                        IEvent e = EventBase.GetEventFromType(ar.Type);
+                        ar.CopyRequestToEvent(e);
+                        list.Add(e);
                     }
-                    await ep.AddArrangements(list);
+                    await ep.AddEvents(list);
 
                     return new HttpResponseMessage()
                     {
@@ -125,19 +124,21 @@ namespace Core.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<HttpResponseMessage> DeleteArrangement(EventRequest req)
+        public async Task<HttpResponseMessage> DeleteEvents(ProjectRequest req)
         {
             if (req.Id != Guid.Empty)
             {
-                if (req.Arrangements != null && req.Arrangements.Any())
+                if (req.Events != null && req.Events.Any())
                 {
-                    var ep = new EventProcessor(req.Id);
-                    List<IArrangement> list = new List<IArrangement>();
-                    foreach (var ar in req.Arrangements)
+                    var ep = new ProjectProcessor(req.Id);
+                    List<IEvent> list = new List<IEvent>();
+                    foreach (var ar in req.Events)
                     {
-                        list.Add(ar);
+                        IEvent e = EventBase.GetEventFromType(ar.Type);
+                        e.Id = ar.Id;
+                        list.Add(e);
                     }
-                    await ep.DeleteArrangements(list);
+                    await ep.DeleteEvents(list);
                     return new HttpResponseMessage()
                     {
                         StatusCode = System.Net.HttpStatusCode.OK
