@@ -20,6 +20,7 @@ namespace Core.Api.Controllers
         public Guid Id { get; set; }
         public void CopyRequestToProject(IProject p)
         {
+            p.Id = Id;
             p.Name = Name;
             if (Events != null)
             {
@@ -64,6 +65,23 @@ namespace Core.Api.Controllers
             req.CopyRequestToProject(p);
             var ep = new ProjectProcessor(p);
             var res = await ep.Create();
+            if (res != null && res.Success)
+            {
+                return new HttpResponseMessage()
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(new { Id = res.Data.Id.ToString() }))
+                };
+            }
+            return new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [HttpPost]
+        public async Task<HttpResponseMessage> Update(ProjectRequest req)
+        {
+            IProject p = new Project();
+            req.CopyRequestToProject(p);
+            var ep = new ProjectProcessor(p);
+            var res = await ep.Update();
             if (res != null && res.Success)
             {
                 return new HttpResponseMessage()

@@ -23,22 +23,7 @@ namespace Core.Test
 
         private IVendor CreateVendor(VendorType type)
         {
-            IVendor vendor = null;
-            switch (type)
-            {
-                case VendorType.Photographer:
-                    vendor = new Photographer();
-                    break;
-                case VendorType.Florist:
-                    vendor = new Florist();
-                    break;
-                case VendorType.Caterer:
-                    vendor = new Caterer();
-                    break;
-                case VendorType.Videographer:
-                    vendor = new Videographer();
-                    break;
-            }
+            IVendor vendor = VendorBase.GetVendorFromType(type);
             vendor.Name = "AAA";
             vendor.Username = "user1";
             vendor.Password = "admin";

@@ -2,6 +2,7 @@
 using Core.Models;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Core.Business
 {
@@ -73,6 +74,19 @@ namespace Core.Business
                 result = new ProcessorResult<T>(ex.Message);
             }
             return result;
+        }
+
+        public virtual async Task<List<T>> FetchQuery(string query)
+        {
+            List<T> result;
+            try
+            {
+                return await _dataHelper.FetchQuery(query);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public virtual async Task<IProcessorResult<T>> Update()

@@ -16,7 +16,7 @@ namespace Core.Data
         }
         internal UserEntity(IUser model) : base(model)
         {
-            RowKey = Username;
+            
         }
         public IContact Contact { get; private set; }
 

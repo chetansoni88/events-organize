@@ -35,13 +35,7 @@ namespace Core.Data
 
         internal override IVendor ConvertToModel()
         {
-            IVendor vendor = null;
-            switch ((VendorType)Type)
-            {
-                case VendorType.Photographer:
-                    vendor = new Photographer();
-                    break;
-            }
+            IVendor vendor = VendorBase.GetVendorFromType((VendorType)Type);
             if (vendor != null)
             {
                 var uEntity = new UserEntity(Id);
@@ -64,22 +58,7 @@ namespace Core.Data
             var list = new List<IVendor>();
             foreach (var entity in entities)
             {
-                IVendor vendor = null;
-                switch ((VendorType)entity.Properties["Type"].Int32Value.Value)
-                {
-                    case VendorType.Photographer:
-                        vendor = new Photographer();
-                        break;
-                    case VendorType.Caterer:
-                        vendor = new Caterer();
-                        break;
-                    case VendorType.Florist:
-                        vendor = new Florist();
-                        break;
-                    case VendorType.Videographer:
-                        vendor = new Videographer();
-                        break;
-                }
+                IVendor vendor = VendorBase.GetVendorFromType((VendorType)entity.Properties["Type"].Int32Value.Value);
                 if (vendor != null)
                 {
                     vendor.Id = entity.Properties["Id"].GuidValue.Value;

@@ -40,12 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\ArrangementProcessor.cs" />
-    <Compile Include="Helpers\EventProcessor.cs" />
-    <Compile Include="Helpers\ProcessorBase.cs" />
-    <Compile Include="Helpers\ProjectProcessor.cs" />
-    <Compile Include="Helpers\UserProcessor.cs" />
-    <Compile Include="Helpers\VendorProcessor.cs" />
+    <Compile Include="Processors\ArrangementProcessor.cs" />
+    <Compile Include="Processors\EventProcessor.cs" />
+    <Compile Include="Processors\ProcessorBase.cs" />
+    <Compile Include="Processors\ProjectProcessor.cs" />
+    <Compile Include="Processors\UserProcessor.cs" />
+    <Compile Include="Processors\VendorProcessor.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Result.cs" />

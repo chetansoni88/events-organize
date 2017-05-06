@@ -42,6 +42,22 @@ namespace Core.Business
             return result;
         }
 
+        public async Task<List<IUser>> GetUserByUsername()
+        {
+            return await DataHelper.FetchQuery(string.Format(@"(Username eq '{0}')", Model.Username));
+        }
+
+        public async override Task<IProcessorResult<IUser>> Create()
+        {
+            var users = await GetUserByUsername();
+            if (users.Count > 0)
+            {
+                IProcessorResult<IUser> result = new ProcessorResult<IUser>("Username already exists.");
+                return result;
+            }
+            return await base.Create();
+        }
+
         public override IValidationResult Validate()
         {
             IValidationResult result = new ValidationResult();

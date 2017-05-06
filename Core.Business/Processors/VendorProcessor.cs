@@ -24,7 +24,7 @@ namespace Core.Business
             IProcessorResult<IVendor> result;
             try
             {
-                UserProcessor up = new UserProcessor((IUser)Model);
+                UserProcessor up = new UserProcessor(Model);
                 var user = await up.Login();
 
                 if (user.Data != null)
@@ -66,6 +66,18 @@ namespace Core.Business
                 result.AddFailure("User email cannot be empty.");
             }
             return result;
+        }
+
+        public async override Task<IProcessorResult<IVendor>> Create()
+        {
+            var up = new UserProcessor(Model);
+            var users = await up.GetUserByUsername();
+            if (users.Count > 0)
+            {
+                IProcessorResult<IVendor> result = new ProcessorResult<IVendor>("Username already exists.");
+                return result;
+            }
+            return await base.Create();
         }
     }
 }
