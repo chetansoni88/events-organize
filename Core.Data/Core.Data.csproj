@@ -68,6 +68,7 @@
     <Compile Include="TableEntities\EventEntity.cs" />
     <Compile Include="TableEntities\ProjectEntity.cs" />
     <Compile Include="TableEntities\TableEntityBase.cs" />
+    <Compile Include="TableEntities\TokenEntity.cs" />
     <Compile Include="TableEntities\UserEntity.cs" />
     <Compile Include="TableEntities\VendorEntity.cs" />
   </ItemGroup>

@@ -64,7 +64,7 @@ namespace Core.Data
                 IUser user = new User();
                 user.Id = entity.Properties["Id"].GuidValue.Value;
                 user.Name = entity.Properties["Name"].StringValue;
-                user.Password = entity.Properties["Password"].StringValue;
+                //user.Password = entity.Properties["Password"].StringValue;
                 user.Username = entity.Properties["Username"].StringValue;
                 user.Contact.Clone(JsonConvert.DeserializeObject<Contact>(entity.Properties["ContactJSON"].StringValue));
                 list.Add(user);

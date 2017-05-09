@@ -67,7 +67,7 @@ namespace Core.Data
                     vendor.Id = Id;
                     vendor.Name = user.Name;
                     vendor.Username = user.Username;
-                    vendor.Password = user.Password;
+                    //vendor.Password = user.Password;
                     vendor.Contact.Clone(user.Contact);
                     list.Add(vendor);
                 }

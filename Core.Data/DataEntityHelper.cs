@@ -30,6 +30,9 @@ namespace Core.Data
                 case "Core.Models.IArrangement":
                     _entity = new ArrangementEntity(id);
                     break;
+                case "Core.Models.IToken":
+                    _entity = new TokenEntity(id);
+                    break;
             }
         }
 
@@ -57,6 +60,9 @@ namespace Core.Data
                     break;
                 case "Core.Models.IArrangement":
                     _entity = new ArrangementEntity((IArrangement)_model);
+                    break;
+                case "Core.Models.IToken":
+                    _entity = new TokenEntity((IToken)_model);
                     break;
             }
         }

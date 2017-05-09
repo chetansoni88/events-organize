@@ -18,26 +18,30 @@ namespace Core.Business
 
         }
 
-        public async Task<IProcessorResult<IUser>> Login()
+        public async Task<IProcessorResult<Guid>> Login()
         {
-            IProcessorResult<IUser> result;
+            IProcessorResult<Guid> result;
             try
             {
                 var users = await DataHelper.FetchQuery(string.Format(@"(Username eq '{0}') and(Password eq '{1}')", Model.Username, Model.Password));
                 if (users.Count == 1)
                 {
-                    result = new ProcessorResult<IUser>(users[0]);
-
+                    IToken t = new Token();
+                    t.Id = Guid.NewGuid();
+                    t.UserId = users[0].Id;
                     //Set up a token after login is successful
+                    var tp = new TokenProcessor(t);
+                    await tp.Create();
+                    result = new ProcessorResult<Guid>(t.Id);
                 }
                 else
                 {
-                    result = new ProcessorResult<IUser>("No user found.");
+                    result = new ProcessorResult<Guid>("No user found.");
                 }
             }
             catch (Exception ex)
             {
-                result = new ProcessorResult<IUser>(ex.Message);
+                result = new ProcessorResult<Guid>(ex.Message);
             }
             return result;
         }

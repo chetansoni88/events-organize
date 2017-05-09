@@ -44,6 +44,7 @@
     <Compile Include="Processors\EventProcessor.cs" />
     <Compile Include="Processors\ProcessorBase.cs" />
     <Compile Include="Processors\ProjectProcessor.cs" />
+    <Compile Include="Processors\TokenProcessor.cs" />
     <Compile Include="Processors\UserProcessor.cs" />
     <Compile Include="Processors\VendorProcessor.cs" />
     <Compile Include="Interfaces.cs" />

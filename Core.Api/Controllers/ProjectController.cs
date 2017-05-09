@@ -18,10 +18,14 @@ namespace Core.Api.Controllers
         public string Name { get; set; }
         public Address Venue { get; set; }
         public Guid Id { get; set; }
+
+        public Guid UserId { get; set; }
+
         public void CopyRequestToProject(IProject p)
         {
             p.Id = Id;
             p.Name = Name;
+            p.UserId = UserId;
             if (Events != null)
             {
                 foreach (var e in Events)
@@ -35,6 +39,7 @@ namespace Core.Api.Controllers
         }
     }
 
+    [TokenAuthentication]
     public class ProjectController : ApiController
     {
         public async Task<HttpResponseMessage> Get(Guid id)

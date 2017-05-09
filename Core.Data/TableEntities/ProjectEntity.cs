@@ -25,6 +25,7 @@ namespace Core.Data
         internal override string TableName => "projects";
 
         public string Name { get; set; }
+        public Guid UserId { get; set; }
 
         public List<IEvent> Events
         {
@@ -56,6 +57,7 @@ namespace Core.Data
             IProject e = null;
             e.Id = Id;
             e.Name = Name;
+            e.UserId = UserId;
             e.Events.AddRange(Events);
             return e;
         }
@@ -63,6 +65,7 @@ namespace Core.Data
         {
             Id = model.Id;
             Name = model.Name;
+            UserId = model.UserId;
             Events = new List<IEvent>();
             Events.AddRange(model.Events);
         }
@@ -74,6 +77,7 @@ namespace Core.Data
                 IProject e = new Project();
                 e.Id = entity.Properties["Id"].GuidValue.Value;
                 e.Name = entity.Properties["Name"].StringValue;
+                e.UserId = entity.Properties["UserId"].GuidValue.Value;
                 var eventsJSON = entity.Properties["EventsJSON"].StringValue;
                 if (!string.IsNullOrEmpty(eventsJSON))
                 {

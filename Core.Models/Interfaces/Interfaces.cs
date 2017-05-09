@@ -65,5 +65,12 @@ namespace Core.Models
     {
         List<IEvent> Events { get; }
         string Name { get; set; }
+
+        Guid UserId { get; set; }
+    }
+
+    public interface IToken:IModel
+    {
+        Guid UserId { get; set; }
     }
 }

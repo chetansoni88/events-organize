@@ -16,6 +16,8 @@ namespace Core.Models
 
         public string Name { get; set; }
 
+        public Guid UserId { get; set; }
+
         List<IUser> Users { get; }
         List<IVendor> Vendors { get; }
     }

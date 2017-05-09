@@ -25,7 +25,7 @@ namespace Core.Api.Controllers
 
         public void CopyRequestToUser(IUser user)
         {
-            if (user.Contact != null)
+            if (user.Contact != null && Contact != null)
                 user.Contact.Clone(Contact);
             user.Id = Id;
             user.Name = Name;
@@ -36,6 +36,7 @@ namespace Core.Api.Controllers
 
     public class UserController : ApiController
     {
+        [TokenAuthentication]
         public async Task<HttpResponseMessage> Get(Guid id)
         {
             if (id != Guid.Empty)
@@ -61,7 +62,7 @@ namespace Core.Api.Controllers
         public async Task<HttpResponseMessage> Create(UserRequest req)
         {
             dynamic proc = GetSaveProcessor(req);
-            
+
             var res = await proc.Create();
             if (res != null)
             {
@@ -85,6 +86,7 @@ namespace Core.Api.Controllers
         }
 
         [HttpPost]
+        [TokenAuthentication]
         public async Task<HttpResponseMessage> Update(UserRequest req)
         {
             dynamic ep = GetSaveProcessor(req);
@@ -100,6 +102,7 @@ namespace Core.Api.Controllers
         }
 
         [HttpPost]
+        [TokenAuthentication]
         public async Task<HttpResponseMessage> Delete(UserRequest req)
         {
             if (req.Id != Guid.Empty)
@@ -118,6 +121,21 @@ namespace Core.Api.Controllers
                 {
                     return new HttpResponseMessage(System.Net.HttpStatusCode.NotFound);
                 }
+            }
+            return new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [HttpPost]
+        public async Task<HttpResponseMessage> Login(UserRequest req)
+        {
+            dynamic ep = GetSaveProcessor(req);
+            dynamic res = await ep.Login();
+            if (res != null && res.Success)
+            {
+                return new HttpResponseMessage()
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(new { TokenId = res.Data }))
+                };
             }
             return new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
         }

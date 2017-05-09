@@ -35,6 +35,7 @@ namespace Core.Api.Controllers
         }
     }
 
+    [TokenAuthentication]
     public class EventController : ApiController
     {
         public async Task<HttpResponseMessage> Get(Guid id)

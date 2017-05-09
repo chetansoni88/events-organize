@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Token.cs" />
     <Compile Include="Address.cs" />
     <Compile Include="Events\Arrangement.cs" />
     <Compile Include="Events\EventBase.cs" />
