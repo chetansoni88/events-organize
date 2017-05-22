@@ -13,10 +13,12 @@ namespace Core.Test
 
         private IUser CreateUser()
         {
-            IUser user = new User();
-            user.Name = "AAA";
-            user.Username = Guid.NewGuid().ToString();
-            user.Password = "admin";
+            IUser user = new User()
+            {
+                Name = "AAA",
+                Username = Guid.NewGuid().ToString(),
+                Password = "admin"
+            };
             user.Contact.Clone(CreateContact());
             return user;
         }
@@ -53,9 +55,11 @@ namespace Core.Test
 
         private IContact CreateContact()
         {
-            IContact c = new Contact();
-            c.Email = "ch_s@yahoo.com";
-            c.Phone = "3254346322";
+            IContact c = new Contact()
+            {
+                Email = "ch_s@yahoo.com",
+                Phone = "3254346322"
+            };
             c.Address.Street = "688 110th Ave";
             c.Address.State = "WA";
             c.Address.Country = "USA";
@@ -66,8 +70,10 @@ namespace Core.Test
 
         private IArrangement CreateArrangement()
         {
-            var a = new Arrangement();
-            a.StartTime = DateTime.Today.AddMonths(1);
+            var a = new Arrangement()
+            {
+                StartTime = DateTime.Today.AddMonths(1)
+            };
             a.EndTime = a.StartTime.AddHours(2);
             a.Status = ArrangementStatus.ToBeStarted;
             return a;
@@ -75,8 +81,10 @@ namespace Core.Test
 
         private IProject CreateProject()
         {
-            IProject p = new Project();
-            p.Name = "Project Sample";
+            IProject p = new Project()
+            {
+                Name = "Project Sample"
+            };
             p.Events.Add(CreateEvent(EventType.Corporate));
             return p;
         }
