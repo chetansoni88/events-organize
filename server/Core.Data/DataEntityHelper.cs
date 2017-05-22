@@ -44,26 +44,29 @@ namespace Core.Data
 
         private void SetEntity()
         {
-            switch (typeof(T).ToString())
+            if (_model != null)
             {
-                case "Core.Models.IUser":
-                    _entity = new UserEntity((IUser)_model);
-                    break;
-                case "Core.Models.IVendor":
-                    _entity = new VendorEntity((IVendor)_model);
-                    break;
-                case "Core.Models.IEvent":
-                    _entity = new EventEntity((IEvent)_model);
-                    break;
-                case "Core.Models.IProject":
-                    _entity = new ProjectEntity((IProject)_model);
-                    break;
-                case "Core.Models.IArrangement":
-                    _entity = new ArrangementEntity((IArrangement)_model);
-                    break;
-                case "Core.Models.IToken":
-                    _entity = new TokenEntity((IToken)_model);
-                    break;
+                switch (typeof(T).ToString())
+                {
+                    case "Core.Models.IUser":
+                        _entity = new UserEntity((IUser)_model);
+                        break;
+                    case "Core.Models.IVendor":
+                        _entity = new VendorEntity((IVendor)_model);
+                        break;
+                    case "Core.Models.IEvent":
+                        _entity = new EventEntity((IEvent)_model);
+                        break;
+                    case "Core.Models.IProject":
+                        _entity = new ProjectEntity((IProject)_model);
+                        break;
+                    case "Core.Models.IArrangement":
+                        _entity = new ArrangementEntity((IArrangement)_model);
+                        break;
+                    case "Core.Models.IToken":
+                        _entity = new TokenEntity((IToken)_model);
+                        break;
+                }
             }
         }
 

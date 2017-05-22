@@ -12,6 +12,8 @@ namespace Core.Models
     public interface IVendor : IUser, IModel
     {
         VendorType Type { get; }
+
+        decimal MinimumTimeRequiredBeforeEvent { get; set; }
     }
 
     public interface IArrangement : IModel

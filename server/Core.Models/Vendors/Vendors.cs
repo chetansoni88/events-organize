@@ -23,4 +23,19 @@ namespace Core.Models
     {
         public override VendorType Type => VendorType.Videographer;
     }
+
+    public class DJ : VendorBase
+    {
+        public override VendorType Type => VendorType.DJ;
+    }
+
+    public class Decor : VendorBase
+    {
+        public override VendorType Type => VendorType.Decor;
+    }
+
+    public class MakeupArtist : VendorBase
+    {
+        public override VendorType Type => VendorType.MakeupArtist;
+    }
 }

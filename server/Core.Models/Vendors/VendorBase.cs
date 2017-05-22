@@ -25,8 +25,24 @@ namespace Core.Models
                 case VendorType.Videographer:
                     e = new Videographer();
                     break;
+                case VendorType.Decor:
+                    e = new Decor();
+                    break;
+                case VendorType.DJ:
+                    e = new DJ();
+                    break;
+                case VendorType.MakeupArtist:
+                    e = new MakeupArtist();
+                    break;
             }
             return e;
         }
+
+        public VendorBase()
+        {
+            MinimumTimeRequiredBeforeEvent = 1;
+        }
+
+        public virtual decimal MinimumTimeRequiredBeforeEvent { get; set; }
     }
 }

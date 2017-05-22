@@ -80,5 +80,10 @@ namespace Core.Business
                 return false;
             }
         }
+
+        public async Task<bool> GetEventTimeLine()
+        {
+            return true;
+        }
     }
 }

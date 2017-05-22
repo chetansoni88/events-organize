@@ -15,7 +15,7 @@ namespace Core.Test
         {
             IUser user = new User();
             user.Name = "AAA";
-            user.Username = "user1";
+            user.Username = Guid.NewGuid().ToString();
             user.Password = "admin";
             user.Contact.Clone(CreateContact());
             return user;
@@ -93,15 +93,20 @@ namespace Core.Test
             Assert.IsTrue(save != null && save.Data != null && save.Data.Id != Guid.Empty, "User save failed.");
 
             var one = up.FetchById().Result;
-
+            one.Data.Password = "admin";
             Assert.IsTrue(one != null && JsonConvert.SerializeObject(one, Formatting.None).Equals(JsonConvert.SerializeObject(save, Formatting.None)), "User fetch failed.");
 
             var loggedIn = up.Login().Result;
-            Assert.IsTrue(loggedIn != null && JsonConvert.SerializeObject(loggedIn.Data, Formatting.None).Equals(JsonConvert.SerializeObject(save.Data, Formatting.None)), "User fetch failed.");
+            Assert.IsTrue(loggedIn != null && loggedIn.Data != Guid.Empty, "User login failed.");
 
             var delete = up.Delete().Result;
             one = up.FetchById().Result;
             Assert.IsTrue(one.Data == null, "User delete failed.");
+
+            var tp = new TokenProcessor(loggedIn.Data);
+            int result = tp.Delete().Result;
+            var t = tp.FetchById().Result;
+            Assert.IsTrue(t.Data == null, "Token delete failed.");
         }
 
         [TestMethod]
@@ -134,12 +139,15 @@ namespace Core.Test
             Assert.IsTrue(save.Data != null && save.Data.Id != Guid.Empty, "Vendor save failed.");
 
             var one = vp.FetchById().Result;
-
+            one.Data.Password = "admin";
             Assert.IsTrue(one.Data != null && JsonConvert.SerializeObject(one.Data, Formatting.None).Equals(JsonConvert.SerializeObject(save.Data, Formatting.None)), "Vendor fetch failed.");
 
             var uHelper = new UserProcessor(save.Data.Id);
             var uOne = uHelper.FetchById().Result;
             Assert.IsTrue(uOne.Data != null, "User not populated from vendor save.");
+
+            var loggedIn = vp.Login().Result;
+            Assert.IsTrue(loggedIn != null && loggedIn.Data != Guid.Empty, "Vendor login failed.");
 
             var delete = vp.Delete().Result;
             one = vp.FetchById().Result;
@@ -147,6 +155,11 @@ namespace Core.Test
 
             uOne = uHelper.FetchById().Result;
             Assert.IsTrue(uOne.Data == null, "User not deleted from vendor delete.");
+
+            var tp = new TokenProcessor(loggedIn.Data);
+            int result = tp.Delete().Result;
+            var t = tp.FetchById().Result;
+            Assert.IsTrue(t.Data == null, "Token delete failed.");
         }
 
         [TestMethod]

@@ -9,7 +9,10 @@ namespace Core.Models
         Photographer,
         Videographer,
         Florist,
-        Caterer
+        Caterer,
+        Decor,
+        DJ,
+        MakeupArtist
     }
 
     public enum EventType

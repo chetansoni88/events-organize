@@ -44,7 +44,7 @@
     <Compile Include="Address.cs" />
     <Compile Include="Events\Arrangement.cs" />
     <Compile Include="Events\EventBase.cs" />
-    <Compile Include="Events\Wedding.cs" />
+    <Compile Include="Events\Events.cs" />
     <Compile Include="Interfaces\Enums.cs" />
     <Compile Include="Interfaces\Interfaces.cs" />
     <Compile Include="Project.cs" />
