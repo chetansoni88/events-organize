@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Event 1",
+        "venue": {
+            "street": "211 Road Ave"
+        }
+    },
+    {
+        "name": "Event 2",
+        "venue": {
+            "street": "4311 Talig Ave"
+        }
+    }
+]
